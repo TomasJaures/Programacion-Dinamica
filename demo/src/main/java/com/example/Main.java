@@ -1,29 +1,29 @@
 package com.example;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+
+import com.example.Backpack.BPSolver;
+import com.example.Backpack.Item;
+import com.example.Benchmarking.Timer;
 
 public class Main {
 
-    static class Item {
-
-        String name;
-        int weight; //Despues a "double"
-        int value;
-
-        Item(String name, int weight, int value){
-            this.name = name;
-            this.weight = weight;
-            this.value = value;
-        }
-    }
-
     public static void main(String[] args) {
 
-        final int cap = 20;
+        System.out.println("========== CASO A ==========");
+        //caseA();
+        System.out.println("============================\n\n");
 
-        //Input
+        System.out.println("========== EXPERIMENTO ==========\n\n");
+        executeExperiment();
+        System.out.println("=================================\n\n");
+
+
+    }
+
+    public static void caseA(){
         List<Item> items = List.of(
             new Item("Agua", 2, 6),
             new Item("Medicamentos", 3, 8),
@@ -33,101 +33,50 @@ public class Main {
             new Item("Herramientas", 7, 12)
         );
 
-        int dp[][] = createTableDP(items, cap);
-        createReport(items, cap, dp);
+        BPSolver.run(items, 20);
+        BPSolver.printReport();
+
     }
 
-    public static int[][] createTableDP(List<Item> items, int cap){
-        int n = items.size() + 1;
-        int[][] dp = new int[n][cap + 1];
+    public static void executeExperiment() {
+        int[] sizes = {10, 20, 50, 100, 200};
 
-        for (int i = 1; i < n; i++) {
-            Item currentItem = items.get(i - 1);
+        for (int size : sizes) {
+            int capacity = size * 5; //Cantidad proporcional
+            List<Item> items = generateItems(size);
 
-            for (int w = 0; w <= cap; w++) {
-                if (currentItem.weight <= w) { //Para que no se salga de la tabla DP
-                    dp[i][w] = Math.max(
-                        dp[i-1][w],
-                        currentItem.value + dp[i-1][w-currentItem.weight]
-                    );
-                } else {
-                    dp[i][w] = dp[i - 1][w];
-                }
-            }
-        }
+            //Warm up para obtener datos mas reales:
+            Timer.warmUp(10000, () -> BPSolver.run(items, capacity));
 
-        return dp;
-    }
+            long totalTimeNs = Timer.getMedia(30, () -> BPSolver.run(items, capacity));
 
-     public static void createReport(List<Item> items, int cap, int[][] dp) {
-        int n = items.size();
+            int rows = size + 1;
+            int cols = capacity + 1;
+            int matrixSize = rows * cols;
 
-        //Agregar a la mochila
-        int x = n;
-        int y = cap;
-        List<Item> bp = new ArrayList<>();
-
-        while (x > 0 && y > 0) {
-            if (dp[x][y] == dp[x - 1][y]) {
-                //System.out.println("Descartado: " + items.get(x - 1).name);
-                x--;
-            } else {
-                //System.out.println("Seleccionado: " + items.get(x - 1).name);
-                bp.add(items.get(x - 1));
-                y -= items.get(x - 1).weight;
-                x--;
-            }
-        }
-
-        int sumW = 0;
-        System.out.println("Items seleccionados: ");
-        for (Item item : bp) {
-            
-            sumW += item.weight;
-            System.out.println("- " + item.name);
-        }
-        System.out.println("\nPeso sumado: (" + sumW + " / " + cap + ")");
-        System.out.println("Valor maximo alcanzado: " + dp[n][cap]);
-
-        y = n;
-        x = cap;
-        //Formatear Table DP (toString)
-        
-        printTableDP(items, cap, dp);
-    }
-   
-
-    public static void printTableDP(List<Item> items, int cap, int[][] dp){
-        System.out.println("==================================== TABLA DP =====================================");
-        int n = items.size() - 1;
-
-        //Linea "0 0 0 0 0 0 0 0 0 0 0 0 ... (Sin item)"
-        System.out.print(String.format("%-20s", "No item: "));
-        for (int i = 0; i < dp[0].length; i++) {
-            System.out.print(String.format("%-3s", dp[0][i]));
-        }
-        System.out.println();
-
-        //Siguientes lineas:
-        for (int i = 1; i < dp.length; i++) {
-            System.out.print(String.format("%-20s", items.get(n - i + 1).name + ": "));
-            for (int j = 0; j < dp[i].length; j++) {
-                System.out.print(String.format("%-3s", dp[i][j]));
-            }
+            System.out.println("[!]====== " + size + " ITEMS =====[!]");
+            System.out.println("Cantidad de items: " + size);
+            System.out.println("Capacidad de la mochila: " + capacity);
+            System.out.println("Tiempo de ejecucion: " + totalTimeNs + " ns (" + (totalTimeNs / 1_000_000.0) + " ms)");
+            System.out.println("Dimensiones de la matriz: " + rows + "x" + cols + " (Total de celdas: " + matrixSize + ")");
+            System.out.println("Valor optima encontrado: " + BPSolver.getMaxValue());
             System.out.println();
-            //System.out.println(Arrays.toString(dp[i]));
         }
-        System.out.print("===================================================================================");
     }
+
+    public static List<Item> generateItems(int size) {
+        Random r = new Random();
+        List<Item> items = new ArrayList<>();
+        for (int i = 1; i <= size; i++) {
+
+            String name = "Item_" + i;
+            int weight = r.nextInt(10) + 1; // Pesos entre 1 y 10
+            int value = r.nextInt(100) + 10; // Valores entre 10 y 110
+            items.add(new Item(name, weight, value));
+
+        }
+
+        return items;
+    }
+    
 }
-
-/*
-
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-[0, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
-[0, 0, 6, 8, 8, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14]
-[0, 0, 6, 8, 8, 14, 14, 15, 15, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21]
-[0, 0, 6, 8, 8, 14, 14, 16, 18, 21, 24, 24, 25, 25, 31, 31, 31, 31, 31, 31, 31]
-[0, 0, 6, 8, 8, 14, 14, 16, 18, 21, 24, 24, 25, 25, 31, 31, 31, 33, 36, 39, 39]
-[0, 0, 6, 8, 8, 14, 14, 16, 18, 21, 24, 24, 26, 26, 31, 31, 33, 36, 36, 39, 39]
-*/
