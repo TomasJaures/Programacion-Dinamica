@@ -1,0 +1,29 @@
+Que se debera hacer:
+
+* > Implementar la solucion
+* > Analizar el comportamiento del algoritmo
+* > Reconstruir la solucion optima encontrada 
+* > Comparar los resultados obtenidos para distintos tamaños de entrada
+
+### Escenario:
+
+Se necesita transportar un vehiculo con capacidad maxima (CAP).
+
+Recurso (ITEM): {peso, valor}
+
+### Parte A
+
+**Entradas:**
+```
+- Lista de objetos
+- Peso de cada objeto
+- Valor de cada objeto
+- Capacidad máxima de la mochila
+```
+
+**Salidas:**
+```
+- Valor maximo alcanzable (maxValue)
+- Objetos seleccionados (objs)
+- Tabla dinamica (tableDP)
+```
