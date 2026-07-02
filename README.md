@@ -12,3 +12,6 @@ Instrucciones de compilacion:
 
 Documentacion del codigo:
 - doc\Informe\Documentacion.pdf
+
+Screenshots del codigo funcionando:
+- doc\Informe\Pruebas.pdf
