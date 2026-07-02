@@ -27,7 +27,7 @@ public final class BPSolver {
     }
 
     public static void createTableDP(){
-        // Se necesita 1 columna y fila mas para los casos base (Sin item y sin capacidad)
+        // Se necesita 1 columna y fila mas para  los casos base (Sin item y sin capacidad)
         int n = items.size() + 1;
         int[][] dp = new int[n][cap + 1];
 

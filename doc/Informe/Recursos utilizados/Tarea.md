@@ -9,7 +9,7 @@ En numerosas situaciones reales es necesario seleccionar un conjunto de elemento
 
 Este tipo de problemas aparece en logística, transporte, planificación de proyectos, asignación de recursos computacionales, gestión de presupuestos e incluso en exploración espacial.
 
-En este laboratorio usted implementará una solución basada en Programación Dinámica para resolver uno de los problemas clásicos de optimización: **el problema de la Mochila 0/1 (0/1 Knapsack Problem)**.
+En este laboratorio usted implementará una solución basada en Programación Dinámica para resolver uno de los problemas clásicos de optimización: **El problema de la Mochila 0/1 (0/1 Knapsack Problem)**.
 
 Además de implementar la solución, deberá analizar el comportamiento del algoritmo, reconstruir la solución óptima encontrada y comparar los resultados obtenidos para distintos tamaños de entrada.
 

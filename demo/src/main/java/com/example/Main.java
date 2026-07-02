@@ -13,7 +13,7 @@ public class Main {
     public static void main(String[] args) {
 
         System.out.println("========== CASO A ==========");
-        //caseA();
+        caseA();
         System.out.println("============================\n\n");
 
         System.out.println("========== EXPERIMENTO ==========\n\n");
@@ -41,12 +41,17 @@ public class Main {
     public static void executeExperiment() {
         int[] sizes = {10, 20, 50, 100, 200};
 
+        //Warm up para obtener datos mas reales:
+        List<Item> warmUpItems = generateItems(50);
+        Timer.warmUp(20000, () -> BPSolver.run(warmUpItems, 150));
+
+
         for (int size : sizes) {
-            int capacity = size * 5; //Cantidad proporcional
+            int capacity = size * 3; //Cantidad proporcional
             List<Item> items = generateItems(size);
 
             //Warm up para obtener datos mas reales:
-            Timer.warmUp(10000, () -> BPSolver.run(items, capacity));
+            Timer.warmUp(1000, () -> BPSolver.run(items, capacity));
 
             long totalTimeNs = Timer.getMedia(30, () -> BPSolver.run(items, capacity));
 
